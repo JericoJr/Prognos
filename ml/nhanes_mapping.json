@@ -1,0 +1,75 @@
+{
+  "_meta": {
+    "source": "NHANES 2017-2018 (J cycle)",
+    "reference": "https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/overview.aspx?BeginYear=2017",
+    "note": "Maps Prognos field names to NHANES variable codes for feature engineering and model training."
+  },
+  "demographics": {
+    "age":              { "var": "RIDAGEYR", "desc": "Age in years at screening", "type": "continuous" },
+    "sex":              { "var": "RIAGENDR", "desc": "Gender", "codes": { "1": "male", "2": "female" } },
+    "race_ethnicity":   { "var": "RIDRETH3", "desc": "Race/Hispanic origin", "codes": { "1": "mexican_american", "2": "other_hispanic", "3": "white", "4": "black", "6": "asian", "7": "other_multiracial" } },
+    "education_level":  { "var": "DMDEDUC2", "desc": "Education level - adults 20+", "codes": { "1": "less_than_9th", "2": "9th_to_11th", "3": "high_school", "4": "some_college", "5": "college_or_above" } },
+    "marital_status":   { "var": "DMDMARTL", "desc": "Marital status", "codes": { "1": "married", "2": "widowed", "3": "divorced", "4": "separated", "5": "never_married", "6": "living_with_partner" } },
+    "household_income": { "var": "INDHHIN2", "desc": "Annual household income", "type": "ordinal_range" }
+  },
+  "body_measurements": {
+    "height_cm":               { "var": "BMXHT",    "desc": "Standing height (cm)",     "unit": "cm" },
+    "weight_kg":               { "var": "BMXWT",    "desc": "Weight (kg)",               "unit": "kg" },
+    "bmi":                     { "var": "BMXBMI",   "desc": "Body Mass Index (kg/m²)",   "unit": "kg/m²", "derived": true },
+    "waist_circumference_cm":  { "var": "BMXWAIST", "desc": "Waist circumference (cm)",  "unit": "cm" }
+  },
+  "lifestyle_factors": {
+    "smoking_status":                     { "vars": ["SMQ020", "SMQ040"], "desc": "Smoked ≥100 cigarettes in life / current status" },
+    "cigarettes_per_day":                 { "var": "SMD641",  "desc": "# cigarettes smoked per day (last 30 days)" },
+    "years_smoked":                       { "var": "SMD650",  "desc": "Average # years smoked" },
+    "years_since_quit":                   { "var": "SMQ050Q", "desc": "How long since quit smoking (units vary)" },
+    "alcohol_frequency":                  { "var": "ALQ111",  "desc": "Ever had a drink of any kind of alcohol" },
+    "alcohol_drinks_per_week":            { "var": "ALQ130",  "desc": "Average # alcoholic drinks/day in past 12 months" },
+    "physical_activity_minutes_per_week": { "var": "PAQ605",  "desc": "Vigorous recreational activities (mins/week derived)" },
+    "sedentary_hours_per_day":            { "var": "PAD680",  "desc": "Minutes sedentary activity (converted to hours)" },
+    "sleep_hours_per_night":              { "var": "SLD010H", "desc": "Sleep hours — weekdays or workdays" }
+  },
+  "dietary_data": {
+    "fruit_servings_per_day":     { "var": "DBD900", "desc": "How often consume any type of fruit (times per day)" },
+    "vegetable_servings_per_day": { "var": "DBD910", "desc": "How often consume any type of vegetable (times per day)" },
+    "water_glasses_per_day":      { "var": "DRD350A", "desc": "Plain water consumption (consumer survey derived)" },
+    "sugary_drinks_per_day":      { "note": "Derived from DR1_030Z/DR2_030Z (non-diet carbonated soft drinks)" },
+    "fast_food_meals_per_week":   { "var": "DBD895", "desc": "# of meals not prepared at home in past 7 days (proxy)" },
+    "processed_food_frequency":   { "note": "Consumer survey item — no direct NHANES var; maps to dietary pattern scores" }
+  },
+  "medical_history": {
+    "diabetes_diagnosed":        { "var": "DIQ010",  "desc": "Has doctor told you have diabetes" },
+    "hypertension_diagnosed":    { "var": "BPQ020",  "desc": "Ever told had high blood pressure" },
+    "heart_disease_diagnosed":   { "vars": ["MCQ160C", "MCQ160D", "MCQ160E"], "desc": "Coronary heart disease / angina / heart attack" },
+    "previous_cancer_diagnosed": { "var": "MCQ220",  "desc": "Ever told you had cancer or malignancy" },
+    "previous_cancer_types":     { "var": "MCQ230A", "desc": "What kind of cancer — first mention" },
+    "family_cancer_history":     { "vars": ["MCQ300A", "MCQ300B", "MCQ300C"], "desc": "Close relative had: heart disease / asthma / diabetes — adapt for cancer" },
+    "current_medications":       { "var": "RXQ510",  "desc": "Currently taking medication — prescription or OTC" }
+  },
+  "symptoms": {
+    "general_health_rating":   { "var": "HUQ010", "desc": "General health condition", "codes": { "1": "excellent", "2": "very_good", "3": "good", "4": "fair", "5": "poor" } },
+    "fatigue":                 { "note": "Derived from relevant symptoms questionnaire items" },
+    "unexplained_weight_loss": { "note": "Derived from WHQ030 (self-reported weight change)" },
+    "persistent_pain":         { "var": "BPQ080", "desc": "Chronic pain items (not exact — map to pain questionnaire)" },
+    "chronic_cough":           { "note": "Derived from respiratory health questionnaire" },
+    "shortness_of_breath":     { "note": "Derived from respiratory health questionnaire (MCQ010)" },
+    "blood_in_stool":          { "note": "Derived from bowel health items" },
+    "unusual_bleeding":        { "note": "Consumer symptom item" },
+    "skin_changes":            { "note": "Derived from dermatology questionnaire items" },
+    "lumps_or_swelling":       { "note": "Consumer symptom item" }
+  },
+  "laboratory_results": {
+    "wbc":               { "var": "LBXWBCSI", "desc": "White blood cell count (SI)", "unit": "10³ cells/uL", "ref_range": "4.5–11.0" },
+    "rbc":               { "var": "LBXRBCSI", "desc": "Red blood cell count (SI)",   "unit": "10⁶ cells/uL","ref_range": "4.1–5.9" },
+    "hemoglobin":        { "var": "LBXHGB",   "desc": "Hemoglobin (g/dL)",           "unit": "g/dL",        "ref_range": "12.0–17.5" },
+    "hematocrit":        { "var": "LBXHCT",   "desc": "Hematocrit (%)",              "unit": "%",           "ref_range": "36–53" },
+    "platelet_count":    { "var": "LBXPLTSI", "desc": "Platelet count (SI)",         "unit": "10³ cells/uL","ref_range": "150–400" },
+    "glucose":           { "var": "LBXGLU",   "desc": "Fasting glucose (mg/dL)",     "unit": "mg/dL",       "ref_range": "70–99" },
+    "hba1c":             { "var": "LBXGH",    "desc": "Glycohemoglobin (%)",          "unit": "%",           "ref_range": "<5.7" },
+    "total_cholesterol": { "var": "LBXTC",    "desc": "Total cholesterol (mg/dL)",   "unit": "mg/dL",       "ref_range": "<200" },
+    "hdl_cholesterol":   { "var": "LBDHDD",   "desc": "Direct HDL-Cholesterol",      "unit": "mg/dL",       "ref_range": ">60" },
+    "ldl_cholesterol":   { "var": "LBDLDLM",  "desc": "LDL-Cholesterol (Friedewald)","unit": "mg/dL",       "ref_range": "<100" },
+    "triglycerides":     { "var": "LBXTR",    "desc": "Triglycerides (mg/dL)",       "unit": "mg/dL",       "ref_range": "<150" },
+    "crp":               { "var": "LBXCRP",   "desc": "C-Reactive Protein (mg/dL → mg/L)","unit": "mg/L",   "ref_range": "<1.0" }
+  }
+}

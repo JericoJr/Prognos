@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /mnt/c/Users/jeric/OneDrive/Documents/Personal/Projects/Python/TaskManager25/Prognos -not -path '*/node_modules/*' -type f | sort)",
+      "Read(//mnt/c/Users/jeric/OneDrive/Documents/Personal/Projects/Python/TaskManager25/**)",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"database\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"frontend\\\\src\\\\components\\\\assessment\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\jeric\\.claude\\projects\\c--Users-jeric-OneDrive-Documents-Personal-Projects-Python-TaskManager25-Prognos\\memory"
+    ]
+  }
+}
