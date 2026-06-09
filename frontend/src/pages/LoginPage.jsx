@@ -30,6 +30,8 @@ export default function LoginPage() {
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
 
+  const successMsg = location.state?.message || ''
+
   if (user) return <Navigate to={from} replace />
 
   const handleSubmit = async (e) => {
@@ -60,6 +62,12 @@ export default function LoginPage() {
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-5">
           <h1 className="text-xl font-semibold text-gray-900">Welcome back</h1>
+
+          {successMsg && (
+            <div className="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
+              {successMsg}
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">

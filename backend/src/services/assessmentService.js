@@ -1,11 +1,11 @@
 const { supabase } = require('../config/supabase')
 
-const saveAssessment = async (assessmentData, prediction) => {
+const saveAssessment = async (assessmentData, prediction, userId) => {
   if (!supabase) throw new Error('Supabase not configured — set SUPABASE_URL and SUPABASE_ANON_KEY in .env')
 
   const { data: assessment, error: assessmentErr } = await supabase
     .from('assessments')
-    .insert({ user_id: null, status: 'completed' })
+    .insert({ user_id: userId || null, status: 'completed' })
     .select()
     .single()
   if (assessmentErr) throw assessmentErr
@@ -22,7 +22,7 @@ const saveAssessment = async (assessmentData, prediction) => {
     supabase.from('laboratory_results').insert({ assessment_id: aid, ...assessmentData.lab_results }),
     supabase.from('prediction_results').insert({
       assessment_id: aid,
-      overall_risk_percentage: prediction.overall_risk_percentage,
+      overall_risk_percentage: prediction.overall_risk,
       risk_category: prediction.risk_category,
       cancer_breakdown: prediction.cancer_breakdown,
       category_contributions: prediction.category_contributions,

@@ -29,7 +29,6 @@ export default function SignupPage() {
   const [showPw,   setShowPw]   = useState(false)
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
-  const [sent,     setSent]     = useState(false)
 
   if (user) return <Navigate to={from} replace />
 
@@ -46,40 +45,19 @@ export default function SignupPage() {
     setLoading(true)
     setError('')
     try {
-      const { user: newUser } = await signUp(email, password)
-      // If email confirmation is enabled, newUser is null until confirmed
-      if (newUser?.identities?.length === 0) {
-        setError('An account with this email already exists. Please sign in instead.')
-        return
+      const { session } = await signUp(email, password)
+      if (session) {
+        // Email confirmation disabled in Supabase — signed in immediately
+        navigate(from, { replace: true })
+      } else {
+        // Email confirmation enabled — redirect to login with a note
+        navigate('/login', { state: { from, message: 'Account created! Please sign in.' } })
       }
-      setSent(true)
     } catch (err) {
       setError(err.message || 'Failed to create account. Please try again.')
     } finally {
       setLoading(false)
     }
-  }
-
-  if (sent) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md text-center space-y-4">
-          <div className="text-5xl">✉️</div>
-          <h1 className="text-2xl font-bold text-gray-900">Check your email</h1>
-          <p className="text-gray-600 text-sm leading-relaxed">
-            We sent a confirmation link to <strong>{email}</strong>.
-            Click the link in the email to activate your account and start your assessment.
-          </p>
-          <p className="text-xs text-gray-400">
-            Didn't receive it? Check your spam folder or{' '}
-            <button onClick={() => setSent(false)} className="text-blue-600 hover:underline">try again</button>.
-          </p>
-          <Link to="/login" className="inline-block mt-4 text-sm text-blue-600 font-semibold hover:text-blue-800">
-            Back to sign in →
-          </Link>
-        </div>
-      </div>
-    )
   }
 
   return (
@@ -124,23 +102,22 @@ export default function SignupPage() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
                   placeholder="Min. 8 characters"
                 />
-                <button
-                  type="button" onClick={() => setShowPw(p => !p)}
+                <button type="button" onClick={() => setShowPw(p => !p)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showPw ? 'Hide password' : 'Show password'}
-                >
+                  aria-label={showPw ? 'Hide password' : 'Show password'}>
                   <EyeIcon open={showPw} />
                 </button>
               </div>
-              {/* Password strength indicator */}
               {password && (
-                <div className="flex gap-1 mt-2">
+                <div className="flex gap-1 mt-2 items-center">
                   {[8, 12, 16].map((len, i) => (
                     <div key={i} className={`flex-1 h-1 rounded-full transition-colors ${
-                      password.length >= len ? (i === 0 ? 'bg-red-400' : i === 1 ? 'bg-yellow-400' : 'bg-green-500') : 'bg-gray-200'
+                      password.length >= len
+                        ? i === 0 ? 'bg-red-400' : i === 1 ? 'bg-yellow-400' : 'bg-green-500'
+                        : 'bg-gray-200'
                     }`} />
                   ))}
-                  <span className="text-xs text-gray-400 ml-1 self-center">
+                  <span className="text-xs text-gray-400 ml-1">
                     {password.length < 8 ? 'Too short' : password.length < 12 ? 'Weak' : password.length < 16 ? 'Good' : 'Strong'}
                   </span>
                 </div>
@@ -163,10 +140,8 @@ export default function SignupPage() {
               )}
             </div>
 
-            <button
-              type="submit" disabled={loading}
-              className="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-            >
+            <button type="submit" disabled={loading}
+              className="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-2">
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -180,7 +155,7 @@ export default function SignupPage() {
           </form>
 
           <p className="text-xs text-gray-400 text-center leading-relaxed">
-            By creating an account you agree that this is a statistical tool for educational purposes only,
+            By creating an account you agree that Prognos is a statistical tool for educational purposes only,
             not a medical diagnosis service.
           </p>
         </div>

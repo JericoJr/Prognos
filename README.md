@@ -25,6 +25,7 @@ Prognos is a web application that estimates a user's likelihood of developing ei
 - **NHANES dataset alignment** — every field maps to a documented NHANES variable code (e.g. `RIDAGEYR`, `BMXBMI`, `SMQ020`, `LBXWBCSI`) so future ML models can be trained directly on NHANES data
 - **ML fallback pattern** — the backend tries the FastAPI prediction service first; if it is unavailable or returns 501, it falls back to a semi-dynamic mock scoring model so the UI works during development before any models are trained
 - **Protected routes** — `/assess` and `/results` require authentication; unauthenticated users are redirected to login and returned to their original destination after sign-in
+- **PDF export** — results page dropdown to download a Full Risk Report PDF or a Lab Results Summary PDF (color-coded status, recommendations, disclaimer footer)
 
 ---
 
@@ -89,7 +90,7 @@ Prognos/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/prognos.git
+git clone https://github.com/JericoJr/Prognos.git
 cd prognos
 ```
 
@@ -103,6 +104,8 @@ cd prognos
    - **Site URL**: `http://localhost:3000`
    - **Redirect URLs**: `http://localhost:3000/reset-password`
 4. Go to **SQL Editor**, paste the contents of `database/schema.sql`, and click **Run**
+5. In the SQL Editor, also paste and run `database/enable_rls.sql` to enable Row Level Security
+6. In **Authentication → Sign In / Up**, disable **Confirm email** so users can sign in immediately after registration
 
 ### 3. Backend
 
@@ -242,5 +245,5 @@ Click **Deploy** — Vercel builds the frontend as a static site and the backend
 - [ ] Replace mock scoring with real model inference in `ml/api/routes/predict.py`
 - [ ] Add SHAP explainability layer to results dashboard
 - [ ] User assessment history — view and compare past assessments
-- [ ] Export results as PDF
+- [x] Export results as PDF (Full Risk Report + Lab Results Summary)
 - [ ] Deploy ML API (e.g., Railway, Render, or AWS Lambda)
