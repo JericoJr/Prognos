@@ -42,7 +42,16 @@ export default function LoginPage() {
       await signIn(email, password)
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err.message || 'Invalid email or password. Please try again.')
+      const msg = (err.message || '').toLowerCase()
+      if (msg.includes('email not confirmed') || msg.includes('not confirmed')) {
+        setError('Account not confirmed. Go to Supabase → Auth → Providers → Email → disable "Confirm email", then delete and re-create your account.')
+      } else if (msg.includes('invalid login') || msg.includes('invalid credentials') || msg.includes('invalid email or password')) {
+        setError('Incorrect email or password.')
+      } else if (msg.includes('rate limit') || msg.includes('too many')) {
+        setError('Too many attempts. Please wait a moment and try again.')
+      } else {
+        setError(err.message || 'Sign in failed. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

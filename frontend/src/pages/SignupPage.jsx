@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 function EyeIcon({ open }) {
@@ -18,10 +18,8 @@ function EyeIcon({ open }) {
 }
 
 export default function SignupPage() {
-  const { signUp, user } = useAuth()
+  const { signUp, signOut, user } = useAuth()
   const navigate  = useNavigate()
-  const location  = useLocation()
-  const from      = location.state?.from || '/assess'
 
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -30,7 +28,7 @@ export default function SignupPage() {
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
 
-  if (user) return <Navigate to={from} replace />
+  if (user) return <Navigate to="/assess" replace />
 
   const validate = () => {
     if (password.length < 8) return 'Password must be at least 8 characters.'
@@ -47,12 +45,9 @@ export default function SignupPage() {
     try {
       const { session } = await signUp(email, password)
       if (session) {
-        // Email confirmation disabled in Supabase — signed in immediately
-        navigate(from, { replace: true })
-      } else {
-        // Email confirmation enabled — redirect to login with a note
-        navigate('/login', { state: { from, message: 'Account created! Please sign in.' } })
+        await signOut()
       }
+      navigate('/login', { state: { message: 'Account created! Please sign in.' } })
     } catch (err) {
       setError(err.message || 'Failed to create account. Please try again.')
     } finally {
@@ -162,7 +157,7 @@ export default function SignupPage() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{' '}
-          <Link to="/login" state={{ from }} className="text-blue-600 font-semibold hover:text-blue-800">
+          <Link to="/login" className="text-blue-600 font-semibold hover:text-blue-800">
             Sign in
           </Link>
         </p>

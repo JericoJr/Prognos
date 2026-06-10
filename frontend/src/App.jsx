@@ -11,6 +11,7 @@ import ResetPasswordPage   from './pages/ResetPasswordPage'
 import AssessmentPage      from './pages/AssessmentPage'
 import ResultsPage         from './pages/ResultsPage'
 import PredictPage         from './pages/PredictPage'
+import ChatBot             from './components/common/ChatBot'
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
           </main>
           <Footer />
         </div>
+        <ChatBot />
       </Router>
     </AuthProvider>
   )

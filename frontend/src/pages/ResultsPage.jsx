@@ -297,14 +297,32 @@ export default function ResultsPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-6">
 
-        {/* Header */}
-        <div className="flex items-start justify-between flex-wrap gap-3">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Your Risk Results</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
+        {/* Cat GIF hero — ML models coming soon */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="flex flex-col items-center px-6 pt-6 pb-4 text-center">
+            <img
+              src="https://media1.tenor.com/m/Rd0jrWH5JjgAAAAd/cat-scuba.gif"
+              alt="Cat scuba diving"
+              className="w-48 h-48 object-cover rounded-xl mb-4"
+              onError={e => { e.target.style.display = 'none' }}
+            />
+            <h1 className="text-2xl font-bold text-gray-900">Assessment Complete!</h1>
+            <p className="text-sm text-gray-500 mt-1">
               {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </p>
           </div>
+          <div className="mx-6 mb-5 bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <p className="text-sm text-blue-800 text-center leading-relaxed">
+              <strong>AI models are currently in training.</strong> Your answers have been recorded.
+              Scores below show <strong>0%</strong> as a placeholder — expand each cancer type to explore
+              risk factors, warning signs, and trusted resources.
+            </p>
+          </div>
+        </div>
+
+        {/* Header actions */}
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <h2 className="text-lg font-semibold text-gray-800">Your Risk Overview</h2>
           <div className="flex items-center gap-2">
             <DownloadDropdown
               result={result}
@@ -320,17 +338,6 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        {/* Mock notice */}
-        {result.mock && (
-          <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <span className="text-amber-500 text-lg flex-shrink-0">⚠</span>
-            <p className="text-xs text-amber-700">
-              <strong>Demonstration mode:</strong> ML models are not yet trained. Scores are generated
-              by a statistical mock model for UI development only.
-            </p>
-          </div>
-        )}
-
         {/* Overall risk card */}
         <div className={`rounded-2xl border-2 p-6 ${cfg.bg} ${cfg.border}`}>
           <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -342,12 +349,12 @@ export default function ResultsPage() {
                 {cfg.label}
               </span>
               <p className="text-sm text-gray-700 leading-relaxed">
-                Based on your health profile, your estimated overall cancer risk is{' '}
-                <strong className={cfg.text}>{pct}%</strong>. This is a composite score
-                across all eight cancer types analysed below.
+                Your estimated overall cancer risk score is{' '}
+                <strong className={cfg.text}>{pct}%</strong> — a composite across all eight
+                cancer types below. Real predictions will be available once models are trained.
               </p>
               <p className="text-xs text-gray-400">
-                Tap any cancer row below to expand recommendations, warning signs, and sources.
+                Tap any cancer row to expand recommendations, warning signs, and sources.
               </p>
             </div>
           </div>
@@ -358,7 +365,9 @@ export default function ResultsPage() {
           <div className="space-y-3">
             <div>
               <h2 className="text-lg font-semibold text-gray-800">Breakdown by Cancer Type</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Sorted by estimated risk — highest first.</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                All scores show 0% (placeholder) — expand each row for detailed information.
+              </p>
             </div>
             <div className="space-y-2">
               {sorted.map(([type, data]) => (
@@ -368,28 +377,77 @@ export default function ResultsPage() {
           </div>
         )}
 
+        {/* Resources */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 space-y-4">
+          <h2 className="text-base font-semibold text-gray-800">Trusted Cancer Resources</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { name: 'National Cancer Institute', desc: 'Research, treatment info & clinical trials', url: 'https://www.cancer.gov' },
+              { name: 'American Cancer Society', desc: 'Patient guides, support & statistics', url: 'https://www.cancer.org' },
+              { name: 'CDC Cancer Resources', desc: 'Prevention, screening & public health data', url: 'https://www.cdc.gov/cancer' },
+              { name: 'Cancer.Net (ASCO)', desc: 'Oncologist-approved patient information', url: 'https://www.cancer.net' },
+              { name: 'CancerCare', desc: 'Free counseling, support groups & financial help', url: 'https://www.cancercare.org' },
+              { name: 'Find a Clinical Trial', desc: 'NCI database of active cancer trials', url: 'https://www.cancer.gov/about-cancer/treatment/clinical-trials/search' },
+            ].map(r => (
+              <a
+                key={r.name}
+                href={r.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition-colors group"
+              >
+                <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-blue-200 transition-colors">
+                  <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700">{r.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{r.desc}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* General recommendations */}
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-5 space-y-3">
+          <h2 className="text-base font-semibold text-green-800">General Cancer Prevention</h2>
+          <ul className="space-y-2">
+            {[
+              'Do not smoke — tobacco causes at least 12 types of cancer.',
+              'Maintain a healthy weight through balanced diet and regular exercise.',
+              'Limit alcohol — no more than 1 drink/day for women, 2 for men.',
+              'Protect your skin from UV radiation with sunscreen and protective clothing.',
+              'Stay up to date on recommended cancer screenings for your age and sex.',
+              'Get vaccinated against HPV (cervical, throat cancers) and Hepatitis B (liver cancer).',
+              'Eat a plant-rich diet high in fiber and low in processed foods.',
+            ].map((tip, i) => (
+              <li key={i} className="flex gap-2 text-sm text-green-800">
+                <span className="text-green-500 mt-0.5 flex-shrink-0 font-bold">✓</span>
+                {tip}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Disclaimer */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
           <p className="text-xs text-yellow-800 leading-relaxed">
             <strong>Medical Disclaimer:</strong> This assessment is for informational and educational
             purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment.
-            If you are concerned about any symptoms or your health, please consult a qualified healthcare
-            professional immediately.
+            Always consult a qualified healthcare professional with any questions regarding your health.
           </p>
         </div>
 
         <div className="text-center pb-6">
-          <p className="text-sm text-gray-500 mb-3">Want to learn more?</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <a href="https://www.cancer.gov" target="_blank" rel="noreferrer"
-              className="text-xs text-blue-600 border border-blue-200 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
-              National Cancer Institute
-            </a>
-            <a href="https://www.cdc.gov/cancer" target="_blank" rel="noreferrer"
-              className="text-xs text-blue-600 border border-blue-200 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors">
-              CDC Cancer Resources
-            </a>
-          </div>
+          <button
+            onClick={() => navigate('/assess')}
+            className="px-6 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Retake Assessment
+          </button>
         </div>
 
       </div>

@@ -8,7 +8,7 @@ import StepDietary          from '../components/assessment/StepDietary'
 import StepMedicalHistory   from '../components/assessment/StepMedicalHistory'
 import StepSymptoms         from '../components/assessment/StepSymptoms'
 import StepLabResults       from '../components/assessment/StepLabResults'
-import { submitAssessment } from '../services/api'
+import { buildMockResult } from '../data/mockResult'
 
 const STEPS = ['Demographics', 'Body', 'Lifestyle', 'Dietary', 'Medical', 'Symptoms', 'Lab Results']
 
@@ -100,14 +100,9 @@ export default function AssessmentPage() {
   const handleSubmit = async () => {
     setLoading(true)
     setError('')
-    try {
-      const result = await submitAssessment(data)
-      navigate('/results', { state: { result, assessmentData: data } })
-    } catch (e) {
-      setError(e?.response?.data?.error || 'Submission failed. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    await new Promise(r => setTimeout(r, 1800))
+    navigate('/results', { state: { result: buildMockResult(), assessmentData: data } })
+    setLoading(false)
   }
 
   return (
